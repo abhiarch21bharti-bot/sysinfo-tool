@@ -23,6 +23,19 @@ def get_cpu_info():
         "CPU usage": f"{psutil.cpu_percent(interval=1)}%"
     }
 
+def get_disk_info():
+    info = {}
+    gb = 1024**3
+    for part in psutil.disk_partitions():
+        try:
+            usage = psutil.disk_usage(part.mountpoint)
+        except PermissionError:
+            continue
+        info[part.mountpoint]=(
+            f"{usage.used / gb:.1f}/{usage.total / gb:.1f} GB ({usage.percent}%)" 
+            )
+    return info
+
 def print_section(title,data):
     print(f"\n==={title}===")
     for key,value in data.items():
@@ -31,6 +44,7 @@ def print_section(title,data):
 def main():
     print_section("System",get_basic_info())
     print_section("CPU",get_cpu_info())
+    print_section("Disks",get_disk_info())
     
 
 
