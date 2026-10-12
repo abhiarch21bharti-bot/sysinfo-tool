@@ -3,6 +3,7 @@
 
 import platform
 import socket
+import psutil
 
 def get_basic_info():
     return {
@@ -15,10 +16,22 @@ def get_basic_info():
 
     }
 
-def main():
-    print("====System Information====")
-    for key, value in get_basic_info().items():
+def get_cpu_info():
+    return {
+        "Physical cores": psutil.cpu_count(logical=False),
+        "Logical cores": psutil.cpu_count(logical=True),
+        "CPU usage": f"{psutil.cpu_percent(interval=1)}%"
+    }
+
+def print_section(title,data):
+    print(f"\n==={title}===")
+    for key,value in data.items():
         print(f"{key:<16}: {value}")
+
+def main():
+    print_section("System",get_basic_info())
+    print_section("CPU",get_cpu_info())
+    
 
 
 
