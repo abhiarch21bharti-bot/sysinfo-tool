@@ -35,6 +35,15 @@ def get_disk_info():
             f"{usage.used / gb:.1f}/{usage.total / gb:.1f} GB ({usage.percent}%)" 
             )
     return info
+def get_memory_info():
+    mem=psutil.virtual_memory()
+    swap=psutil.swap_memory()
+    gb=1024**3
+    return {
+        "Total RAM": f"{mem.total/gb:.1f} GB",
+        "Used RAM": f"{mem.used/gb:.1f} GB ({mem.percent}%)",
+        "Total Swap": f"{swap.total/gb:.1f} GB",
+    }
 
 def print_section(title,data):
     print(f"\n==={title}===")
@@ -45,6 +54,7 @@ def main():
     print_section("System",get_basic_info())
     print_section("CPU",get_cpu_info())
     print_section("Disks",get_disk_info())
+    print_section("Memory",get_memory_info())
     
 
 
