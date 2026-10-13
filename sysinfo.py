@@ -35,6 +35,14 @@ def get_disk_info():
             f"{usage.used / gb:.1f}/{usage.total / gb:.1f} GB ({usage.percent}%)" 
             )
     return info
+
+def get_network_info():
+    info = {}
+    for name, addrs in psutil.net_if_addrs().items():
+        for addr in addrs:
+            if addr.family == socket.AF_INET:
+                info[name]= addr.address
+    return info
 def get_memory_info():
     mem=psutil.virtual_memory()
     swap=psutil.swap_memory()
@@ -54,6 +62,7 @@ def main():
     print_section("System",get_basic_info())
     print_section("CPU",get_cpu_info())
     print_section("Disks",get_disk_info())
+    print_section("Networks",get_network_info())
     print_section("Memory",get_memory_info())
     
 
