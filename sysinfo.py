@@ -64,7 +64,7 @@ def print_section(title,data):
         print(f"{key:<16}: {value}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Print system details")
+    parser = argparse.ArgumentParser(description="Print system details for change2")
     parser.add_argument("--json", action="store_true" , help= "output JSON")
     args= parser.parse_args()
 
