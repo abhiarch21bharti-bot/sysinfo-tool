@@ -4,6 +4,9 @@
 import platform
 import socket
 import psutil
+import argparse
+import json
+
 
 def get_basic_info():
     return {
@@ -43,15 +46,17 @@ def get_network_info():
             if addr.family == socket.AF_INET:
                 info[name]= addr.address
     return info
-def get_memory_info():
-    mem=psutil.virtual_memory()
-    swap=psutil.swap_memory()
-    gb=1024**3
+
+def collect_all():
     return {
-        "Total RAM": f"{mem.total/gb:.1f} GB",
-        "Used RAM": f"{mem.used/gb:.1f} GB ({mem.percent}%)",
-        "Total Swap": f"{swap.total/gb:.1f} GB",
+        "System" : get_basic_info(),
+        "CPU" : get_cpu_info(),
+        "Memory" : get_disk_info(),
+        "Network" : get_network_info(),
+    
     }
+
+
 
 def print_section(title,data):
     print(f"\n==={title}===")
@@ -59,11 +64,21 @@ def print_section(title,data):
         print(f"{key:<16}: {value}")
 
 def main():
-    print_section("System",get_basic_info())
-    print_section("CPU",get_cpu_info())
-    print_section("Disks",get_disk_info())
-    print_section("Networks",get_network_info())
-    print_section("Memory",get_memory_info())
+    parser = argparse.ArgumentParser(description="Print system details")
+    parser.add_argument("--json", action="store_true" , help= "output JSON")
+    args= parser.parse_args()
+
+    data = collect_all()
+    if args.json:
+        print(json.dumps(data,indent=2))
+
+    else:
+        for title,section in data.items():
+            print_section(title,section)
+   # print_section("System",get_basic_info())
+    #print_section("CPU",get_cpu_info())
+    #print_section("Disks",get_disk_info())
+    #print_section("Networks",get_network_info())
     
 
 
